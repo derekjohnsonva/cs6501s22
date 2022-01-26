@@ -65,10 +65,10 @@ def r : ℝ := 1.0  -- 1 taken as a real number
 We can also ask Lean to tell us the type of the value bound to
 each of these identifiers using the #check command.
 -/
-#check n 
+#check n
 #check z
-#check q 
-#check r 
+#check q
+#check r
 
 /-
 We can also reduce any given identifier to the value to 
@@ -141,7 +141,6 @@ to * such terms.
 (1) Evaluating a literal terms yields the term (value) itself
 -/
 #reduce (1: ℕ)
-
 /-
 Evaluating an identifier term return the term (value) to
 which the identifier is bound.

@@ -139,3 +139,11 @@ Self quiz: What is the type of bb? Answer yourself before checking.
 
 #check bb
 
+def func
+  (α_type : Sort u)           
+  (beautiful : α_type → Prop) 
+  (a b : α_type)              
+  (h_eq : a = b)              
+  (h_beaut : beautiful a) :
+  beautiful b :=
+  eq.subst h_eq h_beaut

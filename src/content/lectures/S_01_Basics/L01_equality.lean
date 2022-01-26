@@ -44,8 +44,11 @@ Indeed, that's just how it works, as the
 follow example shows formally (in Lean).
 -/
 
-example : 1 = 1 := eq.refl 1   -- T = ℕ 
+def foo : 1 = 1 := eq.refl 1   -- T = ℕ 
+-- id     type      value
+-- id     propo     proof
 
+example (n: ℕ) : n = n := eq.refl n 
 /-
 Yay! We just constructed a formal proof: a
 mathematical object that certifies that 1=1. 
@@ -149,7 +152,7 @@ t = t, is *true*.
 -/
 
 def gimme_a_proof   -- function name
-    {T : Type}      -- first argument, value inferred
+    {T : Type}       -- first argument, value inferred from curly brace
     (t : T)         -- second argument, value given explicitly
     : t = t         -- return "type" 
     := eq.refl t    -- return "value" (function body)
@@ -196,7 +199,7 @@ Remember when reading the outputs that
 "eq.refl x" *is* an object that serves 
 as a proof of x = x
 -/
-
+#check gimme_a_proof 0
 #reduce gimme_a_proof 0         -- T = ℕ 
 #reduce gimme_a_proof tt        -- T = bool
 #reduce @gimme_a_proof ℚ 1      -- T = ℚ, complicated
