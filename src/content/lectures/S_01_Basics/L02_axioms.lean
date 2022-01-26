@@ -127,7 +127,7 @@ axioms
   (h_beaut : beautiful a)     -- h_beaut is a proof that a is beautiful
 
 def bb : beautiful b := eq.subst h_eq h_beaut
-
+#check bb
 /-
 Note that the first four argument values are implicit and inferred.
 {α : Sort u_1} 
@@ -136,6 +136,15 @@ Note that the first four argument values are implicit and inferred.
 
 Self quiz: What is the type of bb? Answer yourself before checking.
 -/
+
+def func 
+  (α_type : Sort u)           -- α_type is some type
+  (beautiful : α_type → Prop) -- beautiful is a property of α_type
+  (a b : α_type)              -- a and b are objects of α_type
+  (h_eq : a = b)              -- h_eq is a proof of (a value of type) a = b
+  (h_beaut : beautiful a) : 
+  beautiful b :=
+  eq.subst h_eq h_beaut 
 
 #check bb
 

@@ -66,18 +66,20 @@ Proofs
 
 /-
 In the logic of Lean, a proposition is a type,
-and the values of that type are its proofs. Just
-as we can give an example value of an ordinary 
-data type, such as ℕ, we can also give example
-values of propositions acting as types, i.e., 
-proofs.
+and the values of that type, if there are any, 
+are its proofs. 
+
+Just as we can give an example value of a data 
+type, such as ℕ, we can also give example values
+of propositions that are represented as types, 
+i.e., as "proof terms," or just "proofs."
 -/
 
 -- give a value of the nat type
-example : ℕ := 5
+example : ℕ := _
 
 -- give a proof of the proposition 1 = 1 
-example : 1 = 1 := eq.refl 1
+example : 1 = 1 := _
 
 /-
 We will now present formal proofs of our two 
