@@ -16,7 +16,7 @@ x = y and y = z, are true, then we can apply the
 inference rule (actually a theorem, in this case, 
 rather than axiom) that expresses that equality is 
 a transitive relation to deduce the truth of x = z.
-The "rule" basicall states, x = y → y = z → x = z.
+The "rule" basically states, x = y → y = z → x = z.
 
 But in our "software" logic, an inference 
 rule is not just a reasoning principle for
