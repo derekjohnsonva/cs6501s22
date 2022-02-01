@@ -30,7 +30,38 @@ conjecture in the formal language of predicate
 logic. We'll use an implementation of a specific
 version of predicate logic provided by the Lean
 Prover.
+-/
+universe u
+def eq_symm' : ∀ (α : Sort u), ∀ (a b : α), a = b → b = a :=
+begin
+  intros α a b h_eq,
+  rewrite h_eq,
+end
 
+axioms (foo bar : ℕ) (h : foo = bar) 
+def xyz : bar = foo := eq_symm' ℕ foo bar h
+#check xyz
+
+def eq_trans' : ∀ (α : Sort u) (a b c : α), a = b → b = c -> a = c  := 
+begin
+  intros α a b c h_ab h_bc,
+  rw <- h_ab at h_bc,
+  exact h_bc, -- or apply h_bc or assumption
+end
+
+def eq_trans'' : ∀ (α : Sort u) (a b c : α), a = b → b = c -> a = c  := 
+begin
+  intros α a b c h_ab h_bc,
+  rw h_ab, -- rewrites the thing we are trying to prove using h_ab transforming it from a = c to b = c
+  exact h_bc,
+end
+
+/-
+eq.subst : ∀ {α : Sort u_1} {P : α → Prop} {a b : α}, a = b → P a → P b
+-/
+-- eq.subst is good for rewriting 
+
+/-
 Second, you must understand how to construct 
 proofs of such propositions, if proofs actually
 exist, which they might or might not for given
@@ -76,10 +107,13 @@ i.e., as "proof terms," or just "proofs."
 -/
 
 -- give a value of the nat type
-example : ℕ := _
+example : ℕ := 1
 
 -- give a proof of the proposition 1 = 1 
-example : 1 = 1 := _
+example : 1 = 1 := refl 1
+example : 1 = 1 := eq.refl 1
+example : 1 = 1 := rfl
+
 
 /-
 We will now present formal proofs of our two 

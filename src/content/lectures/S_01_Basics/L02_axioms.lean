@@ -148,11 +148,58 @@ def func
 
 #check bb
 
-def func
-  (α_type : Sort u)           
-  (beautiful : α_type → Prop) 
-  (a b : α_type)              
-  (h_eq : a = b)              
-  (h_beaut : beautiful a) :
-  beautiful b :=
-  eq.subst h_eq h_beaut
+def isEven (n : ℕ) : Prop := n % 2 = 0
+
+#reduce isEven 2
+example : isEven 2 := eq.refl 0
+
+def foo (a b : ℕ) (h_eq : a = b) (h_ev : isEven a) : isEven b :=
+eq.subst h_eq h_ev
+
+#check foo (1+1) 2 rfl rfl
+#reduce foo (1+1) 2 rfl rfl
+#reduce 2=3
+
+/-
+eq : Π {α : Sort u_1}, α → α → Prop
+-/
+#check @eq
+
+def two_eq_three : Prop := @eq ℕ 2 3
+#reduce two_eq_three
+
+namespace hidden
+
+inductive empty : Type
+
+inductive unit : Type 
+| star
+
+inductive bool
+| tt -- true constructor
+| ff -- false constructor
+/-
+Constructors are disjoint
+Constructors are injective
+Constructors are exhaustive
+-/
+
+inductive nat_with_error : Type
+| some (n : ℕ)
+| none
+
+def maybe_good (n : ℕ): nat_with_error :=
+nat_with_error.some n
+
+universe uu
+inductive option (α : Type uu)
+| some (a : α) : option
+| none : option
+
+inductive nat : Type
+| zero : nat
+| succ (n' : nat) : nat
+
+def zero := nat.zero
+def two := nat.succ(nat.succ(nat.zero))
+end hidden
