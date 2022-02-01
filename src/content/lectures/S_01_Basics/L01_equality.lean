@@ -44,9 +44,9 @@ Indeed, that's just how it works, as the
 follow example shows formally (in Lean).
 -/
 
-def foo : 1 = 1 := eq.refl 1   -- T = ℕ 
--- id     type      value
--- id     propo     proof
+example : 1 = 1 := eq.refl 1   -- T = ℕ 
+--  id    type     value
+--  id    propo    proof
 
 example (n: ℕ) : n = n := eq.refl n 
 /-
@@ -232,3 +232,7 @@ example : 2 = 2 := rfl          -- this varient infors both arguments
 
 #check @rfl     -- same as eq.refl but with both arguments implicit
 #check @eq.refl --
+
+def foobar : 1 = 1 := rfl
+
+#reduce foobar

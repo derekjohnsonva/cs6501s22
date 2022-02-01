@@ -56,9 +56,9 @@ Lean. We give definitions to the identifiers, n, z,, q, and r.
 Each gets a value, "1", but these values are of different types: 
 natural number, integer, rational, and real, respectively. 
 -/
-def n : ℕ := 1   -- 1 taken as a natural number
+def n : ℕ := 1    -- 1 taken as a natural number
 def z : ℤ := 1    -- 1 taken as an integer
-def q : ℚ := 1/1  -- 1 as a rational number 
+def q : ℚ := 1    -- 1 as a rational number 
 def r : ℝ := 1.0  -- 1 taken as a real number 
 
 /-
@@ -157,7 +157,7 @@ in which this function is applied to an argument term
 of type nat is itself of type nat.
 -/
 
-#check nat.pred m'    -- Lean likes the notation m'.pred
+#check (nat.pred m')    -- Lean likes the notation m'.pred
 
 /-
 Not that we write an application term as a function name
