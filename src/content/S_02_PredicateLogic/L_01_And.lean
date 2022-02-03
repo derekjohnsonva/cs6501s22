@@ -190,6 +190,64 @@ proposition that "∧ is associative" by
 uncommenting and completing the following
 definition.
 -/
+namespace a
+theorem and_assoc: ∀ (P Q R : Prop), (P ∧ (Q ∧ R)) → ((P ∧ Q) ∧ R) := 
+begin
+  intros P Q R h,
+  exact ⟨⟨h.left, h.right.left⟩ , h.right.right⟩ 
+end
 
--- theorem and_assoc ...
+theorem and_assoc': ∀ (P Q R : Prop), (P ∧ (Q ∧ R)) → ((P ∧ Q) ∧ R) := 
+begin
+  intros P Q R h,
+  apply and.intro (_) (_),
+  exact and.intro h.left h.right.left,
+  exact h.right.right,
+end
+
+example : ∀ (P Q R : Prop), (P ∧ (Q ∧ R)) → ((P ∧ Q) ∧ R) := 
+begin
+  intros P Q R h,
+  have p : P := h.left,
+  have q : Q := h.right.left,
+  have r : R := h.right.right,
+  exact ⟨⟨p, q⟩, r ⟩,
+end
+
+/-
+and : Prop → Prop → Prop
+-/
+#check and
+
+-- Think of this like a data type with one contructor `intro` and two fields, `p` and `q`
+inductive and (P Q : Prop) : Prop
+| intro (p : P) (q : Q) : and
+
+def elim_left : (and P Q) → P
+| (and.intro p q) := p
+
+
+def elim_right : (and P Q) → Q
+| (and.intro p q) := q
+
+axiom h : and P Q
+
+#reduce elim_right h
+
+def negate : bool → bool
+| ff := tt
+| tt := ff
+
+
+example : negate tt = ff := rfl
+example : negate ff = tt := rfl
+
+def posnat : nat → option nat
+| nat.zero := option.none
+| n := n
+
+#reduce posnat 0
+#reduce posnat 5
+
+end a
 
