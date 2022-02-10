@@ -112,3 +112,10 @@ begin
   unfold incr,
   exact h_h,
 end
+
+/- 
+So then what is the point of this all? Why not always use computation?
+Functions in lean are TOTAL. Meaning they assume they will work on
+all values of the input data type.
+Any relation can be a function if it is single valued. 
+-/
