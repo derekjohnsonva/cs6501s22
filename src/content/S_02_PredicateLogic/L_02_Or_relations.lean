@@ -167,6 +167,108 @@ left conjunct is inferred.
 
 
 /-
+NEW STUFF: Elim rule for or
+-/
+
+#check @or.elim
+
+/-
+or.elim : ∀ {a b c : Prop}, a ∨ b → (a → c) → (b → c) → c
+-/
+
+axioms
+  (Person : Type)
+  (Tom : Person)
+  (FromCville FromRichmond FromVirginia: Person → Prop)
+  (pf : FromCville Tom ∨ FromRichmond Tom)
+  (cv : ∀ {p :Person}, FromCville p → FromVirginia p)
+  (rv : ∀ {p :Person}, FromRichmond p → FromVirginia p)
+
+  theorem TomIsFromVa : (FromVirginia Tom) := 
+  begin
+    cases pf,
+    exact cv h,
+    exact rv h,
+  end
+
+  /-
+  Properties as single-argument predicates
+  -/
+
+  def ev' : ℕ → Prop := λ n, n%2 = 0
+
+inductive ev : ℕ → Prop 
+| ev_0 : ev 0
+| ev_2 : ∀ (n : ℕ), ev n → ev (n + 2)
+
+example : ev 0 := ev.ev_0
+
+example : ev 2 :=
+begin
+  apply ev.ev_2 _ _,
+  exact ev.ev_0,
+end
+
+example : ev 8 :=
+begin
+  apply ev.ev_2 6 _,
+    {apply ev.ev_2 4 _,
+    apply ev.ev_2 2 _,
+    apply ev.ev_2 0 _,
+    exact ev.ev_0,}
+end
+
+example : ev 1000 :=
+begin
+  repeat {apply ev.ev_2},
+  exact ev.ev_0,
+end
+
+inductive lte : ℕ → ℕ → Prop
+| base : ∀ {n : ℕ}, lte n n 
+| step : ∀ {n m : ℕ}, lte n m → lte n (nat.succ m)
+
+example : lte 3 3 := lte.base
+example : lte 3 4 := 
+begin
+  apply lte.step,
+  exact lte.base,
+end
+
+example : lte 3 6 :=
+begin
+  apply lte.step,
+  apply lte.step,
+  apply lte.step,
+  exact lte.base,
+end 
+
+#check nat.le
+
+
+/-
+The propositions, true and false.
+-/
+
+namespace hidden
+
+inductive false : Prop
+/-
+inductive empty : Type
+-/
+
+inductive true : Prop
+| intro
+/-
+inductive unit : Type
+| star
+-/
+
+example : true := true.intro
+example : false := _
+
+end hidden
+/-
 #2. Define an inductive family of propositions 
 to specify the successor relationship, succ_rel,
 between pairs of natural numbers. Given any two
