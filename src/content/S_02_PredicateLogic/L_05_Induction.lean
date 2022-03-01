@@ -19,7 +19,7 @@ begin
 
   -- inductive case
   assume n' facn',
-  exact facn' * (n'+1)
+  exact facn' * (n'+1),
 end
 
 example : fac 0 = 1 := rfl
@@ -38,6 +38,7 @@ def sum_to : ℕ → ℕ
 
 example : sum_to 0 = 0 := rfl
 example : sum_to 10 = 55 := rfl
+example : sum_to 11 = 66 := rfl
 
 theorem sum_thm : 
 ∀ (n : ℕ), 2 * sum_to n = n * (nat.succ n) :=
