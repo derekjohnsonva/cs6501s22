@@ -83,5 +83,13 @@ Try slightly changing the definition of "and" or
 changes break the proof(s).
 -/
 
+#reduce or tt ff
 
+-- infix `&`:10 := and
+-- infix `|`:11 := or
+-- prefix `!` := not
+
+-- #reduce boo.tt & boo.tt
+-- #reduce boo.tt | boo.ff
+-- #reduce !boo.tt
 end hidden

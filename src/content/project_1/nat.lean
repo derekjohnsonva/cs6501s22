@@ -201,7 +201,8 @@ There are many properties we can try to prove. As
 a starter, let's try to prove that zero is a left
 identity for addition.
 -/
-example : ∀ (m : nt), add zero m = m := by simp [add] 
+example : ∀ (m : nt), add zero m = m := by simp [add]
+example : ∀ (m n: nt), ∃(p : nt), add m n = p := by 
 
 /-
 The crucial point in this case is that we already
@@ -232,8 +233,36 @@ as a theorem.
 example : ∀ (m : nt), add m zero = m := by simp [add] --fail
 
 -- You prove it!
-example : ∀ (m : nt), add m zero = m :=
+theorem zero_is_right_zero : ∀ (m : nt), add m zero = m :=
 begin
+  assume m,
+  induction m with m' h,
+  simp [add],
+  simp [add],
+  exact h,
 end
+
+-- NOTATION
+
+notation x + y := add x y
+notation x * y := mul x y
+
+#reduce one + two * two -- Mult has higher precedence 
+
+
+-- HOMEWORK
+-- PROVE Associativity, Commutivity, Distrubility
+
+theorem add_commutes : ∀ (m n : nt), m + n = n + m :=
+begin
+  intros,
+  induction m with m' h,
+  simp [add],
+  rewrite zero_is_right_zero,
+  simp [add],
+  rw h,  
+end
+
+
 
 end hidden
