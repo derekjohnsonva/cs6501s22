@@ -83,7 +83,15 @@ Try slightly changing the definition of "and" or
 changes break the proof(s).
 -/
 
-#reduce or tt ff
+#reduce and tt ff
+
+notation b1 * b2 := and b1 b2
+notation b1 + b2 := or b1 b2
+prefix ! := not
+
+#reduce boo.tt * boo.ff
+#reduce boo.tt + boo.ff
+#reduce !(boo.tt + boo.ff)
 
 -- infix `&`:10 := and
 -- infix `|`:11 := or

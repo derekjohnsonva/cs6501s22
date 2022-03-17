@@ -200,6 +200,10 @@ PROOFS OF PROPERTIES
 There are many properties we can try to prove. As
 a starter, let's try to prove that zero is a left
 identity for addition.
+
+def add : nt → nt → nt
+| zero m := m
+| (succ n') m := succ (add n' m)
 -/
 example : ∀ (m : nt), add zero m = m := by simp [add]
 example : ∀ (m n: nt), ∃(p : nt), add m n = p := by 
@@ -231,15 +235,66 @@ have an axiom for that! Rather we'll need to prove it
 as a theorem.
 -/
 example : ∀ (m : nt), add m zero = m := by simp [add] --fail
+/-
+def add : nt → nt → nt
+| zero m := m
+| (succ n') m := succ (add n' m)
+-/
 
 -- You prove it!
 theorem zero_is_right_zero : ∀ (m : nt), add m zero = m :=
+<<<<<<< HEAD
 begin
   assume m,
   induction m with m' h,
   simp [add],
   simp [add],
   exact h,
+=======
+begin
+  assume m,
+  induction m with m' h,
+  simp [add],
+  simp [add],
+  exact h,
+end
+
+-- NOTATION
+
+notation x + y := add x y
+notation x * y := mul x y
+
+#reduce five + six
+#reduce five * six + two
+
+
+/-
+defn of add
+
+def add : nt → nt → nt
+| zero m := m
+| (succ n') m := succ (add n' m)
+
+theorem zero_is_right_zero : ∀ (m : nt), add m zero = m 
+
+-/
+
+-- HOMEWORK
+theorem add_commutes : ∀ (m n : nt), m + n = n + m :=
+begin
+  assume m n,
+  induction m with m' h,
+  -- base case
+  -- exact rfl,   does NOT work
+  simp [add],
+  rw zero_is_right_zero,
+  -- inductive case
+  simp [add],
+  rw h,
+  induction n,
+  --
+
+>>>>>>> 048e906ba802c54b63c4238c1f03b2a25f8b47dc
 end
 
 -- NOTATION

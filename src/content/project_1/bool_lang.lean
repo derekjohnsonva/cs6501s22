@@ -2,11 +2,20 @@ import .bool
 
 namespace hidden
 
-inductive bool_var : Type
-| X 
-| Y 
-| Z
+-- inductive bool_var : Type
+-- | X 
+-- | Y 
+-- | Z
+
+inductive bool_var
+| V (n : ℕ)
+
 open bool_var
+
+def X := V 0
+def Y := V 1
+def Z := V 2
+
 inductive bool_lang : Type 
 | TT : bool_lang
 | FF : bool_lang
@@ -25,16 +34,27 @@ def be4 := neg be3
 
 open boo
 
-def eval : bool_lang → boo
-| TT := tt
-| FF := ff
-| (var v) := 
-| (conj e1 e2) := and (eval e1) (eval e2)
-| (disj e1 e2) := or (eval e1) (eval e2)
-| (neg e1) := not (eval e1)
+def var_interp_1 : bool_var → boo
+| v := tt
 
-#reduce eval be4
-#reduce eval (conj (disj be2 be4) be3)
+
+def var_interp_2 : bool_var → boo
+| (V 0) := tt
+| (V 1) := ff
+| (V 2) := tt
+| _ := tt
+
+def eval : bool_lang → (bool_var → boo) → boo
+| TT _ := tt
+| FF _ := ff
+| (var v) f := f v
+| (conj e1 e2) i := and (eval e1 i) (eval e2 i)
+| (disj e1 e2) i := or (eval e1 i) (eval e2 i)
+| (neg e1) i := not (eval e1 i)
+
+#reduce eval be4 var_interp_1
+#reduce eval (conj (disj be2 be4) be3) var_interp_1
+#reduce eval (conj (var X) (var Y)) var_interp_1
 
 -- Non terminating recursions will not compile
 def bad : ℕ → false
@@ -49,7 +69,7 @@ meta def bad' : ℕ → false
 -- PROPERTIES?
 -- Property of an expression, e, evaluating to true. 
 def evaluates_to_true : bool_lang → Prop
-| e := eval e = boo.tt
+| e := eval e var_interp_1 = boo.tt
 
 example : evaluates_to_true TT := 
 begin
@@ -67,7 +87,9 @@ end
 -- Do this for homework
 def lang_is_det : ∀ (e1 e2 : bool_lang), e1 = e2 → eval e1 = eval e2 :=
 begin
-  apply 
+  intros e1 e2 h,
+  -- reflexive
+  
 end
 
 end hidden
