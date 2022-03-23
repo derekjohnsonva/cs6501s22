@@ -360,13 +360,6 @@ begin
   simp [add],
 end
 
-theorem mul_by_zero_is_zero_other : ∀ (m : nt), mul zero m = zero :=
-begin
-  intros,
-  induction m with m' h,
-  simp [mul, mul],
-end
-
 /-
 def add : nt → nt → nt
 | zero m := m

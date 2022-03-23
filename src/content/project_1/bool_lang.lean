@@ -1,7 +1,9 @@
 import .bool
+import .arith_lang
 
-namespace hidden
-
+namespace bool_namespace
+open bool_namespace
+open hidden
 -- inductive bool_var : Type
 -- | X 
 -- | Y 
@@ -23,6 +25,7 @@ inductive bool_lang : Type
 | conj (e1 e2 : bool_lang) : bool_lang
 | disj (el e2 : bool_lang) : bool_lang
 | neg (e : bool_lang) : bool_lang
+| eql (e1 e2 : nt_lang)
 
 open bool_lang
 
@@ -51,6 +54,7 @@ def eval : bool_lang → (bool_var → boo) → boo
 | (conj e1 e2) i := and (eval e1 i) (eval e2 i)
 | (disj e1 e2) i := or (eval e1 i) (eval e2 i)
 | (neg e1) i := not (eval e1 i)
+| (eql e1 e2) := if ()
 
 #reduce eval be4 var_interp_1
 #reduce eval (conj (disj be2 be4) be3) var_interp_1
@@ -92,4 +96,4 @@ begin
   
 end
 
-end hidden
+end bool_namespace
