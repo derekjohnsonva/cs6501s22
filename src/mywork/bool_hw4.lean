@@ -35,11 +35,16 @@ inductive not_logical : boo → boo → Prop
 | intro2 : ∀ (b1 b2 : boo), b1 = tt →  b2 = tt → not_logical b1 b2
 
 def fals : boo → boo
-| b := ff 
+| b := ff
+
+inductive fals_logical : boo → Prop 
+| intro : ∀ (b : boo), b = ff → fals_logical b
 
 def troo : boo → boo
 | b := tt 
 
+inductive troo_logical : boo → Prop 
+| intro : ∀ (b : boo), b = tt → troo_logical b
 -- binary operations
 
 def and : boo → boo → boo
@@ -47,6 +52,9 @@ def and : boo → boo → boo
 | ff tt := ff
 | tt ff := ff
 | tt tt := tt
+
+inductive and_logical : boo → boo → boo → Prop
+| intro1 : ∀ (b1 b2 b3 : boo), 
 
 def or : boo → boo → boo
 | ff ff := ff
@@ -99,10 +107,5 @@ prefix ! := not
 #reduce boo.tt * boo.ff
 #reduce boo.tt + boo.ff
 #reduce !(boo.tt + boo.ff)
-
-
--- Monotone 
--- Non Monotone
-
 
 end hidden

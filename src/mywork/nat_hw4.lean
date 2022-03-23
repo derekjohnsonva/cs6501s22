@@ -58,13 +58,10 @@ def id : nt → nt
 
 example : id two = two := rfl
 
+--
 inductive id_nat_prop : nt → nt → Prop
 | intro : ∀ (n1 n2 : nt), n1 = n2 → id_nat_prop n1 n2
 
-
-inductive thing_we_want : nt → Prop
-| intro1: ∀ (n1 : nt), n1 = zero → thing_we_want n1
-| intro2: ∀ (n1 : nt), n1 = one → thing_we_want n1
 
 /-
 id_nat_prop two three : Prop
@@ -76,6 +73,10 @@ begin
   apply id_nat_prop.intro,
   exact rfl,
 end
+
+inductive thing_we_want : nt → Prop
+| intro1: ∀ (n1 : nt), n1 = zero → thing_we_want n1
+| intro2: ∀ (n1 : nt), n1 = one → thing_we_want n1
 
 -- Veryfi ythe computational and Logical Forms are the same
 theorem id_verifies: ∀ (x y : nt), id x = y ↔ id_nat_prop x y :=
@@ -99,6 +100,8 @@ A similar strategy works for defining increment.
 def inc : nt → nt 
 | n := succ n
 
+inductive inc_inductive : nt → nt
+| n 
 
 /-
 Next we'll look at the decrement function, defined
@@ -160,6 +163,17 @@ def isZero : nt → bool
 | zero := tt 
 | _ := ff
 
+inductive is_zero_inductive : nt → bool → Prop
+| intro1 : ∀ (n : nt) (b : bool), n = zero → b = tt → is_zero_inductive n b
+| intro2 : ∀ (n : nt) (b : bool), isZero n = ff →  b = ff → is_zero_inductive n b
+
+example : is_zero_inductive zero ff :=
+begin
+  apply is_zero_inductive.intro2,
+  unfold isZero,
+  -- This is good, we should not be able to prove this
+end
+
 /-
 Another example of a function where there's no 
 need to analyze the argument: this function takes
@@ -194,6 +208,22 @@ of inc to two.
 def add : nt → nt → nt
 | zero m := m
 | (succ n') m := succ (add n' m)
+
+inductive add_logical : nt → nt → nt → Prop
+| intro : ∀ (n1 n2 n3 : nt), (add n1 n2) = n3 → add_logical n1 n2 n3
+
+example : ∀ (n1 n2 n3 : nt), add n1 n2 = n3 ↔ add_logical n1 n2 n3 := 
+begin
+  intros,
+  split,
+  assume h,
+  apply add_logical.intro n1 n2 n3,
+  apply h,
+  -- 1 Goal
+  assume h,
+  cases h, -- When you have a proof of something as an assumption, use cases
+  assumption,
+end
 
 -- tests
 #reduce add two three                 -- check by eye
@@ -338,133 +368,5 @@ notation x + y := add x y
 notation x * y := mul x y
 
 #reduce one + two * two -- Mult has higher precedence 
-
--- HOMEWORK
--- PROVE Associativity, Commutivity, Distrubility
-
-theorem succ_is_associative_left: ∀ (m n : nt), m.succ + n = (m + n).succ :=
-begin
-  intros,
-  induction m with m' h,
-  simp [add],
-  -- 1 goal
-  simp [add],
-end
-
-theorem succ_is_associative_right: ∀ (m n : nt), m + n.succ = (m + n).succ :=
-begin
-  intros,
-  induction m with m' h,
-  simp [add],
-  simp [add],
-  apply h,
-end
-
-theorem mul_by_zero_is_zero : ∀ (m : nt), mul m zero = zero :=
-begin
-  intros,
-  induction m with m' h,
-  simp [mul],
-  simp [mul],
-  rw h,
-  simp [add],
-end
-
-/-
-def add : nt → nt → nt
-| zero m := m
-| (succ n') m := succ (add n' m)
--/
--- https://proofwiki.org/wiki/Natural_Number_Addition_is_Commutative
-theorem add_commutes : ∀ (m n : nt), m + n = n + m :=
-begin
-  intros,
-  induction m with m' h,
-  simp [add],
-  rw zero_is_right_zero,
-  simp [add],
-  rw h,
-  -- What to do?? we have it in the wrong order
-  rw succ_is_associative_right,
-end
-
-
-theorem add_associative : ∀ (m n t :nt), m + (n + t) = (m + n) + t :=
-begin
-  intros,
-  induction m with m' h1,
-  simp [add],
-  induction n with n' h2,
-  simp [add],
-  rewrite zero_is_right_zero,
-  induction t with t' h3,
-  simp [add],
-  rewrite zero_is_right_zero,
-  rewrite zero_is_right_zero,
-  simp [add],
-  apply h1,
-end
-
--- https://proofwiki.org/wiki/Natural_Number_Multiplication_Distributes_over_Addition
-theorem mull_distribute : ∀ (m n t : nt), m * (n + t) = (m * n) + (m * t) :=
-begin
-  intros,
-  induction m with m' h1,
-  simp [mul],
-  simp [add],
-  -- 1 goal
-  
-  simp [mul],
-  simp [h1],
-  -- just need to reorder ???
-  -- m'*n+m'*t+(n+t) = m'*n+n+(m'*t+t)
-  rw add_commutes (m'*t) _,
-  rw add_associative,
-  rw add_associative,
-  --m'*n+m'*t+n+t = m'*n+n+t+m'*t
-end
-
-theorem mull_addition_prop : ∀ (m n : nt), m + (n * m) = m * n.succ :=
-begin
-  -- Prove this
-end
-
-/-
-def mul : nt → nt → nt
-| zero m := zero
-| (succ n') m := add (mul n' m) m 
--/
--- https://proofwiki.org/wiki/Natural_Number_Multiplication_is_Commutative
-theorem mul_commutes : ∀ (m n : nt), m * n = n * m :=
-begin
-  intros,
-  induction n with n' h,
-  simp [mul],
-  rw mul_by_zero_is_zero,
-
-  simp [mul],
-  rw add_commutes,
-  rw  ←h,
-  -- now we need to prove multiplication distributes over addition
-  -- m*n'.succ = m+m*n'
-  rw ← mull_addition_prop,
-  rw h,
-end
-
-theorem mull_associative_basis : ∀ (m n : nt), (m * n) * zero = zero :=
-begin
-  intros,
-  rw mul_by_zero_is_zero,
-end
-
-theorem mull_associative : ∀ (m n t :nt), m * (n * t) = (m * n) * t :=
-begin
-  intros,
-  induction t with t' h,
-  rw mull_associative_basis,
-  rw mul_by_zero_is_zero,
-  rw mul_by_zero_is_zero,
-    
-end
 
 end hidden
