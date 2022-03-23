@@ -11,4 +11,3 @@ possibly with recursion) as an inductive family of Props;
 then translate each test case encoded as an equality of
 computed and expected values into a proposition and proof.
 -/
-

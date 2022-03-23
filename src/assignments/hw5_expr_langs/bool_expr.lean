@@ -157,6 +157,35 @@ begin
   rw h2,
 end
 
+def nat_eq : ℕ → ℕ → bool
+| nat.zero nat.zero := bool.tt
+| nat.zero _ := bool.ff
+| _ nat.zero := bool.ff
+| (nat.succ n') (nat.succ m') := nat_eq n' m'
+
+def var_eq : bool_var → bool_var → bool
+| (V n1) (V n2) := nat_eq n1 n2
+
+def override : (bool_var → boo) → bool_var → boo → (bool_var → boo) :=
+λ i v' b, 
+  λ v, if (var_eq v v') then b else (i v) 
+
+
+def init := var_interp_1
+#reduce init X
+#reduce init Y
+#reduce init Z
+
+def state_1 := override init X ff
+#reduce state_1 X
+#reduce state_1 Y
+#reduce state_1 Z
+
+def state_2 := override (override init X ff) Z ff
+#reduce state_2 X
+#reduce state_2 Y
+#reduce state_2 Z
+
 
 def nat_eq : ℕ → ℕ → bool
 | nat.zero nat.zero := bool.tt

@@ -41,55 +41,34 @@ def six := succ five
 OPERATIONS
 -/
 
--- unary operations
+-- COMPUTATIONAL
 
 /-
-This implementation of the identity function
-shows that we can match "any" argument with the
-use of an available (unbound) identifier, here n.
-You can read this definition as saying that id
-is a function from nt to nt, and in particular
-when applied to any argument, n, it returns n.
-Importantly, we don't need to "analyze" n to 
-decide what to return. 
+This implementation of the identity function can
+be read as saying that id is a function from nt 
+to nt, and in particular when applied to any
+argument, n, it returns n. Importantly, we don't
+need to "analyze/destructure" n to decide what 
+to return: we just return whatever we got. 
 -/
 def id : nt → nt 
 | n := n
 
-example : id two = two := rfl
-
-inductive id_nat_prop : nt → nt → Prop
-| intro : ∀ (n1 n2 : nt), n1 = n2 → id_nat_prop n1 n2
+-- we can compute results of evaluating applications
+#reduce (id two)
 
 /-
-id_nat_prop two three : Prop
+We can also write test cases as equality propositions
+that assert that actual outputs are equal to expected
+outputs, with simple equality proofs. The failure of
+rfl here indicates that either the computation or the
+test case is wrong.
 -/
-#check (id_nat_prop two three)
-
-example : id_nat_prop two two := 
-begin
-  apply id_nat_prop.intro,
-  exact rfl,
-end
-
--- Veryfi ythe computational and Logical Forms are the same
-theorem id_verifies: ∀ (x y : nt), id x = y ↔ id_nat_prop x y :=
-begin           
-  intros x y,
-  split,
-  assume h,
-  apply id_nat_prop.intro,
-  exact h,
-  
-  assume h,
-  cases h,
-  rw h_ᾰ,
-  exact rfl,
-end
-
+example : id two = two := rfl
+example : id three = two := rfl -- oops, bad test case
 
 /-
-A similar strategy works for defining increment.
+A similar approaches works for defining increment.
 -/
 def inc : nt → nt 
 | n := succ n
@@ -100,18 +79,29 @@ Next we'll look at the decrement function, defined
 mathemtically as mapping 0 to 0 and and any positive
 natural number, n = n'+1, to n', i.e., to n-1. Make
 sure you understand what we just said! To implement
-this function, we need to analyze the argument in
-order to determine if it's zero or non-zero (which
-is to say, the successor of some natural number, n').
+this function, we need to *analyze/destructure* the 
+argument in order to determine if it's zero or some
+non-zero number (which is to say, the successor of 
+some one-smaller natural number, n').
 -/
 def dec : nt → nt 
 | zero := zero 
-| (succ n') := n' 
+| (succ n') := n'   -- you must understand this!
 
 -- tests
-#reduce dec two
-#reduce dec one
-#reduce dec zero
+#reduce dec two     -- expect one
+#reduce dec one     -- expect zero
+#reduce dec zero    -- expect zero
+
+/-
+Test cases as equality propositions for 
+individual inputs.
+-/
+
+example : dec two = one := rfl
+example : dec one = zero := rfl
+example : dec zero = zero := rfl
+
 
 /-
 The key to this definition is in the pattern match
@@ -174,7 +164,7 @@ def const_zero' (n : nt) := zero
 
 -- some simple tests
 #check const_zero'
-#reduce const_zero' six
+#reduce const_zero' six -- expect zero
 
 
 -- binary operations
@@ -227,6 +217,11 @@ begin
 end
 
 /-
+Problem: represent the square function
+on natural numbers declaratively.
+-/
+
+/-
 Exponentiation is defined to be iteration
 of multiplication of the first argument the
 second argument number of times. Take some
@@ -260,7 +255,8 @@ example : ∀ (m n: nt), ∃(p : nt), add m n = p := by
 /-
 The crucial point in this case is that we already
 know that, ∀ (m : nt), add zero m = m, *from the 
-definition of add*. 
+definition of add*. In other words, add zero m is
+*definitionally* equal to m.
 
   def add : nt → nt → nt
   | zero m := m
@@ -273,13 +269,14 @@ we do by using the simplify (simp) tactic in Lean,
 pointing it to the definition whose rules we want
 it to employ.
 
-Note that "by" is a way of introducing a proof written
-using tactics without having the write "begin ... end."
+Note that "by" is a way of introducing a proof 
+written using tactics without having the write 
+a complete "begin ... end" block.
 -/
 
 /-
 Perhaps somewhat surprisingly, we hit a roadblock when
-we try to prove that zero is a right identity. We don't
+we try to prove that zero is a *right* identity. We don't
 have an axiom for that! Rather we'll need to prove it 
 as a theorem.
 -/
@@ -290,11 +287,11 @@ def add : nt → nt → nt
 | (succ n') m := succ (add n' m)
 -/
 
--- You prove it!
+-- Prove it!
 theorem zero_is_right_zero : ∀ (m : nt), add m zero = m :=
 begin
   assume m,
-  induction m with m' h,
+  induction m with m' h,  -- by induction!
   simp [add],
   simp [add],
   exact h,
@@ -309,23 +306,32 @@ end
 
 -- NOTATION
 
+/-
+A complete, beautiful, and highly usable "module"
+that implements an algebraic structure, such as 
+Boolean algebra or Peano arithmetic, often needs
+to introduce convenient *notations* for applying
+operations to arguments. We'd rather write (2 + 3)
+than (nat.add zero.succ.succ zero.succ.succ.succ),
+for example, even though we understand that they
+mean the same thing. 
+
+In Lean, we can overload operators, such as +, 
+that are already defined in Lean's libraries, 
+and we will thereby inherit both precedence and
+associativity properties that were carefully
+crafted by the library designers. 
+-/
+
 notation x + y := add x y
 notation x * y := mul x y
 
-#reduce five + six
-#reduce five * six + two
+#reduce five + six        -- expect 11 .succs of zero
+#reduce five * six + two  -- expect 32 .succs of zero
 
+-- Now we can use these notations in writing expressions
+example : five + six = zero.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ := rfl
 
-/-
-defn of add
-
-def add : nt → nt → nt
-| zero m := m
-| (succ n') m := succ (add n' m)
-
-theorem zero_is_right_zero : ∀ (m : nt), add m zero = m 
-
--/
 
 -- NOTATION
 

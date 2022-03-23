@@ -1,6 +1,10 @@
 import .bool
+import .arith_lang
 
-namespace hidden 
+namespace arith 
+
+open arith
+open hidden
 
 -- DATA TYPE
 
@@ -28,6 +32,7 @@ inductive bool_lang : Type
 | conj (e1 e2 : bool_lang) : bool_lang
 | disj (e1 e2 : bool_lang) : bool_lang
 | neg (e : bool_lang)
+| eql (e1 e2 : nt_lang)
 
 
 -- REFACTOR INTO TEST FILE
@@ -37,8 +42,6 @@ def be2 := FF
 def ve1 := var X
 def be3 := conj be1 be2
 def be4 := neg be3
-
-open boo
 
 def var_interp_1 : bool_var → boo
 | v := boo.tt
@@ -64,6 +67,7 @@ def eval : bool_lang → (bool_var → boo) → boo
 | (conj e1 e2) i := and (eval e1 i) (eval e2 i)
 | (disj e1 e2) i := or (eval e1 i) (eval e2 i)
 | (neg e) i := not (eval e i)
+| (eql e1 e2) := _ -- evaluate e1, e2, and return boo.tt if equal else boo.ff
 
 -- NOTATIONS
 notation b1 * b2 := conj b1 b2
@@ -153,34 +157,55 @@ begin
   rw h2,
 end
 
+
 def nat_eq : ℕ → ℕ → bool
 | nat.zero nat.zero := bool.tt
 | nat.zero _ := bool.ff
 | _ nat.zero := bool.ff
 | (nat.succ n') (nat.succ m') := nat_eq n' m'
 
+#reduce nat_eq 0 0
+#reduce nat_eq 0 1
+#reduce nat_eq 1 0
+#reduce nat_eq 1 1
+
 def var_eq : bool_var → bool_var → bool
 | (V n1) (V n2) := nat_eq n1 n2
 
+#reduce var_eq X X
+#reduce var_eq X Y
+#reduce var_eq X Z
+#reduce var_eq Y X
+#reduce var_eq Z X
+#reduce  var_eq Z Y
+#reduce var_eq Z Z
+
 def override : (bool_var → boo) → bool_var → boo → (bool_var → boo) :=
 λ i v' b, 
-  λ v, if (var_eq v v') then b else (i v) 
+  λ v, if (var_eq v v') then b else (i v)
 
+/-
+def var_interp_1 : bool_var → boo
+| v := boo.tt
+-/
 
 def init := var_interp_1
+
 #reduce init X
 #reduce init Y
 #reduce init Z
 
-def state_1 := override init X ff
-#reduce state_1 X
-#reduce state_1 Y
-#reduce state_1 Z
+def st_1 := override init X ff
 
-def state_2 := override (override init X ff) Z ff
-#reduce state_2 X
-#reduce state_2 Y
-#reduce state_2 Z
+#reduce st_1 X
+#reduce st_1 Y
+#reduce st_1 Z
+
+def st_2 := override (st_1) Z ff
+
+#reduce st_2 X
+#reduce st_2 Y
+#reduce st_2 Z
 
 
-end hidden
+end arith
