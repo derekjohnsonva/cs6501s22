@@ -4,7 +4,6 @@ import .arith_lang
 namespace arith 
 
 open arith
-open hidden
 
 -- DATA TYPE
 

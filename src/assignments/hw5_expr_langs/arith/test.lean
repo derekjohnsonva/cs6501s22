@@ -1,7 +1,5 @@
-import .expr
 import .interp
-import .eval
-import .var
+import .expr
 
 open arith
 open arith.var
@@ -47,7 +45,7 @@ example : st_2 Z = 5 := rfl
 def e1 := [0] -- overloaded []: literal expresion
 def e2 := e1 + e1
 def e3 := e2++
-def e4 := [X] + [Y] + [Z]   -- []: "var" expression
+def e4 := ⟨ X ⟩   -- []: "var" expression
 
 -- test evaluation
 
