@@ -18,6 +18,6 @@ def eval : bool_expr → interp → bool
 | (var v) i := i v
 | (conj e1 e2) i := and (eval e1 i) (eval e2 i)
 | (disj e1 e2) i := or (eval e1 i) (eval e2 i)
-| (neg e) i := not (eval e i)
+| (not e) i := bnot (eval e i)
 
 end bool_lang

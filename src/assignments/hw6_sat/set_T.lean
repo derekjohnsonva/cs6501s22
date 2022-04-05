@@ -13,6 +13,8 @@ sets as lists without duplicates.
 
 def cset (T : Type) := list T
 
+-- OPERATIONS
+
 def contains {T : Type}: (T → T → bool) → T → cset T → bool
 | _ _ nil := ff
 | t_eq v (h::t) := if (t_eq v h) then tt else (contains t_eq v t)

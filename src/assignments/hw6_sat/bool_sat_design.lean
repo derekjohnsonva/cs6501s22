@@ -10,62 +10,39 @@ open bool_lang.bool_expr
 Our next goal is to implement a simple
 Boolean satisfiablity solver. 
 
+Along the way, we'll be introduced to the 
+higher-order functions, map and fold, on
+lists.
+-/
+
+/-
+First, let's write a declarative specification.
+Satisfiability is a property of Boolean expressions.
+-/
+
+def is_satisfiable (e : bool_expr) : Prop := 
+  ∃ (i : interp), eval e i = tt 
+
+/-
+Satisfiability a "decideable" property, in that 
+there is an algorithm (guaranteed to terminate in
+a finite number of steps for any input) that will
+compute whether a given expression has this property
+or not. 
+
+For an expressions with n distinct variables, a 
+brute force algorithm will enumerate all 2^n 
+interpretations, will evaluate the expression 
+under each one, and will determine whether the 
+expression evaluates to true under at least one 
+of them. 
+-/
+
+/-
 Last time we sketched out an implementation and
 somewhat "recklessly" got started implemeting one
-of the required subroutines: a procedure that 
-computes the set of distinct variables in any 
-given expression, e. Along the way we learned
-about the list ADT and used it to implement a
-"mutable set" ADT, basing the implementation 
-on lists without duplicates. 
-
-Today we'll first review and update that work
-quikcly, and then take a step back and see how 
-we can apply a more systematic design procedure
-to the construction of an implementation of our
-SAT solver.
-
-In particular, the take-away concept from this
-class is "top-down structured decomposition," 
-also known as "structured programming." Knowing 
-how to do structured programming is essential
-for every half-way decent software engineer.
--/ 
-
-/- 
-1. Assume the function that is to be defined
-2. Write test cases / conjectures
-3. Specify subroutines needed to implement the function
-4. Implement the function in terms of these routines
-5. Recursively develop subroutines
-6. Run tests, debug and repair if needed, celebrate
--/
-
-/-
-Last time we crafted the following decomposition
-
-Given any expression, e,
-  1. Compute set, V, of distinct variables in e
-  2. Compute list, is, of all interpretations for V
-  3. Evaluate e under each interpretation i ∈ is
-  4. "or-reduce" list of Booleans to result value
-  5. return this result
--/
-
-/-
-Let's apply top-down structured decomposition.
-
-1. Assume the function to be defined
-2. Write test cases -- test-driven development (TDD)
-3. Specify subroutines needed to implement the function
-4. Implement the function in terms of these routines
-5. Recursively develop subroutines
-6. Run tests, debug and repair if needed, celebrate
--/
-
-/-
-0. Define is_satisfiable function from 
-   expr to bool
+of them: a procedure that computes the set of 
+distinct variables in any given expression, e.
 
 1. Compute set, V, of variables in expression
   - get_var_set : bool_expr → cset bool_var
@@ -76,20 +53,35 @@ Let's apply top-down structured decomposition.
   - get_interps : cset bool_var → list bool_interp
   - requires list abstraction; we use Lean's list 
 
-3. "Map" list of interps to list of expression values
+3. Map list of interps to list of bool values
   - interps_of_vars : cset interp → list bool
 
-4. "Fold/reduce" list of Boolean results to final result
-  - reduce_and : list bool → bool
-  - reduce_or : list bool → bool
+4. Reduce list of Boolean values to final result
+  - reduce_or : list bool → bool (satisfiability)
+  - reduce_and : list bool → bool (validity)
+-/
 
-5. Return resulting value
+/-
+Today we'll learn a much more systematic design
+and extremely important and fundamental design
+procedure: top-down structured decomposition. It
+is also known simple as "structured programming." 
+Understanding structured programming is essential
+for any competent software engineer.
+
+1. Assume the function that is to be defined
+2. Write test cases / conjectures that should
+   pass when the programming is complete
+3. Assume subroutines needed to implement function
+4. Implement the function in terms of these routines
+5. Recursively apply this procedure to subroutines
+6. Run tests, debug, repair if needed, celebrate
 -/
 
 --axioms
   -- (reduce_or : list bool → bool)
   -- (reduce_and : list bool → bool)
-  -- (get_(map : ∀ {α β : Type}, (α → β) → list α → list β)
+  -- (map : ∀ {α β : Type}, (α → β) → list α → list β)
   -- (interps_of_vars : cset bool_var → list interp)
   -- (get_var_set : bool_expr → cset bool_var)
 
@@ -127,7 +119,7 @@ def reduce_or : list bool → bool
 #check @list.map
 
 
-def is_satisfiable : bool_expr → bool :=
+def is_satisfiable' : bool_expr → bool :=
 λ e,
   reduce_or
     (
@@ -137,6 +129,7 @@ def is_satisfiable : bool_expr → bool :=
           (get_var_set e)
         )
     )
+
 
 /-
 Talk about reversal of order of expression versus our
