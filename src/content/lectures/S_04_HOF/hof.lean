@@ -1,13 +1,26 @@
--- HIGHER ORDER FUNCTIONS
--- WE have three examples of funcitons that will perform an operation on a list of nats
 
+/-
+Let's look at three functions, each transforming
+one list into another by converting each element
+in the argument list, through the application of
+a function, into a corresponding element in the
+resulting list. Try to see the commonalities and
+the dimesions of variation. 
+-/
+
+
+-- map each n in argument list to n+1 in result
+-- e.g., add_1 [1, 2, 3] = [2, 3, 4]
 def add_1 : list nat → list nat
 | [] := []
 | (h::t) := (h+1)::add_1 t
 
-#reduce add_1 []
-#reduce add_1 [1, 2, 3]
+example : add_1 [] = [] := rfl
+example : add_1 [1, 2, 3] = [2, 3, 4] := rfl 
 
+
+-- map each n in argument list to n+2 in result
+-- e.g., add_2 [1, 2, 3] = [3, 4, 5] 
 def add_2 : list nat → list nat
 | [] := []
 | (h::t) := (h+2)::add_2 t

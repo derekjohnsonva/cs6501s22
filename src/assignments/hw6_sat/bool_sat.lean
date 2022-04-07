@@ -94,12 +94,15 @@ Let's apply top-down structured decomposition.
   -- (get_var_set : bool_expr → cset bool_var)
 
 def interps_of_vars_helper : ℕ → list interp
-| 0       := []
+| 0       := 
 | (n'+1)  := _::(interps_of_vars_helper n')
 
+def pow : nat → nat → nat 
+| n 0 := 1
+| n (nat.succ n') := n * (pow n n')
 
 def interps_of_vars : cset bool_var → list interp
-| s := let n := (size s) in interps_of_vars_helper n
+| s := let n := (size s) in interps_of_vars_helper (pow 2 n)
 
 -- HOMEWORK #1: Complete this function. 
 def get_var_set : bool_expr → cset bool_var
