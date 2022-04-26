@@ -205,7 +205,8 @@ required typeclass instance.
 #eval default bool    -- implicitly receives bool_inhab_
 #eval default nat     -- implicitly receives nat_inhab_
 #eval default string  -- implicitly receives string_inhab_
-#eval default empty   -- no instance for the empty type! 
+#eval default empty   -- OOPS. No instance for empty type
+#eval default int     -- OOPS. No instance for int type
 
 
 /-
