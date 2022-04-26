@@ -1,44 +1,8 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.191.0/containers/ubuntu
 {
-	"name": "leanvm",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": { "VARIANT": "focal" }
-	},
-
-	// arguments needed to enable ptrace debugging, e.g., for C++, in the container
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
-
-	// Set *default* container specific settings.json values on container create.
-	"settings": {},
-
-
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"ms-vsliveshare.vsliveshare",
-		"ms-vsliveshare.vsliveshare-audio",
-		"ms-vsliveshare.vsliveshare-pack",
-		"ms-vscode-remote.remote-containers",
-		"yzhang.markdown-all-in-one",
-		"goessner.mdmath",
-		"davidanson.vscode-markdownlint",
-		"mathematic.vscode-pdf",
-		"ms-azuretools.vscode-docker",
-		"eamodio.gitlens",
-		"stephanvs.dot",
-		"jroesch.lean",
-		"ms-vscode-remote.remote-ssh"
-	],
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "leanpkg configure && git remote add upstream https://github.com/kevinsullivan/cs6501s22.git",
-
-	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
-	// TODO: Add vscode user creation to DOCKERFILE then uncomment
+  "dockerFile": "Dockerfile",
+  "context": ".",
+  "extensions": [
+    "jroesch.lean",
+    "bungcip.better-toml"
+  ]
 }
-
