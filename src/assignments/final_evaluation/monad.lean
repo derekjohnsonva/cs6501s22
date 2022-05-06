@@ -7,6 +7,8 @@ prelude
 import .applicative
 universes u v
 
+namespace hidden
+
 open function
 
 class has_bind (m : Type u → Type v) :=
@@ -30,3 +32,5 @@ pure
 /- Identical to has_bind.and_then, but it is not inlined. -/
 def has_bind.seq {α β : Type u} {m : Type u → Type v} [has_bind m] (x : m α) (y : m β) : m β :=
 do x, y
+
+end hidden

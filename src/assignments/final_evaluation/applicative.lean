@@ -9,6 +9,8 @@ import .functor                 --Sullivan: import local file
 open function
 universes u v
 
+namespace hidden
+
 class has_pure (f : Type u → Type v) :=
 (pure {α : Type u} : α → f α)
 
@@ -33,3 +35,5 @@ class applicative (f : Type u → Type v) extends functor f, has_pure f, has_seq
 (map       := λ _ _ x y, pure x <*> y)
 (seq_left  := λ α β a b, const β <$> a <*> b)
 (seq_right := λ α β a b, const α id <$> a <*> b)
+
+end hidden
