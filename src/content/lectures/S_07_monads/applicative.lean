@@ -133,6 +133,8 @@ instance : applicative option := ⟨ ⟩
 #reduce pure (nat.mul) <**> none <**> some 4
 #reduce pure (nat.mul) <**> some 3 <**> none
 
+#reduce some(nat.add) <**> some 3 <**> some 4
+
 /-
 Think of "none" as indicating a failure to compute
 a function argument. What we've thus produced here,
